@@ -30,9 +30,9 @@ public static class CommandLineValidator
             isValid = false;
         }
 
-        var citiesList = cities.Split(',');
+        var citiesList = cities?.Split(',');
         
-        if (citiesList.Length == 0)
+        if (citiesList?.Length == 0)
         {
             Console.Error.WriteLine("isun.exe: --cities option must contain at least one city");
             isValid = false;
