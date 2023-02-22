@@ -11,6 +11,6 @@ public class DataProcessor : IDataProcessor
         var jsonString = JsonConvert.SerializeObject(weathers);
 
         // Write the JSON string to a file
-        await File.AppendAllTextAsync("files\\weatherData.txt", jsonString);
+        await File.AppendAllTextAsync("weatherData.txt", jsonString);
     }
 }
