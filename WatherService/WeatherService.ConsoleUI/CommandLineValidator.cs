@@ -20,13 +20,13 @@ public static class CommandLineValidator
         }
         catch (OptionException ex)
         {
-            Console.Error.WriteLine($"isun.exe: {ex.Message}");
+            Console.Error.WriteLine($"WeatherService.ConsoleUI.exe: {ex.Message}");
             isValid = false;
         }
 
         if (string.IsNullOrEmpty(cities))
         {
-            Console.Error.WriteLine("isun.exe: --cities option is required");
+            Console.Error.WriteLine("WeatherService.ConsoleUI.exe: --cities option is required");
             isValid = false;
         }
 
@@ -34,7 +34,7 @@ public static class CommandLineValidator
         
         if (citiesList?.Length == 0)
         {
-            Console.Error.WriteLine("isun.exe: --cities option must contain at least one city");
+            Console.Error.WriteLine("WeatherService.ConsoleUI.exe: --cities option must contain at least one city");
             isValid = false;
         }
 
