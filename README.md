@@ -2,6 +2,17 @@
 
 
 In order to launch the application, fill in the required fields in the application configuration (appsettings.json).
+{   
+
+    "WeatherOptions": {
+        "BaseUrl": "<YOUR-API-BASE-URL>",
+        "GetWeatherByCityNameEndpoint":"api/weathers",
+        "AuthenticationEndpoint": "api/authorize",
+        "Username":"YOUR-USERNAME",
+        "Password": "YOUR-PASSWORD"
+    }
+    
+}
 After that, the application will be ready to build and launch. 
 
 Based on the requirements, the application will send weather requests every 15 seconds and display the result, as well as save data to a file in the form of json.
