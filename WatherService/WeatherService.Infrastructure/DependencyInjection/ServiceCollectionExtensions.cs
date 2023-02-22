@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeatherService.Domain.Interfaces;
+using WeatherService.Domain.Options;
 using WeatherService.Infrastructure.DataClients;
-using WeatherService.Infrastructure.Options.Interfaces;
 
 namespace WeatherService.Infrastructure.DependencyInjection;
 
@@ -19,6 +19,4 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-
-    
 }

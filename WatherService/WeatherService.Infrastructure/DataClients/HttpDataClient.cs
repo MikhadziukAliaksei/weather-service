@@ -7,7 +7,7 @@ using Polly;
 using Polly.Extensions.Http;
 using Serilog;
 using WeatherService.Domain.Interfaces;
-using WeatherService.Infrastructure.Options.Interfaces;
+using WeatherService.Domain.Options;
 
 namespace WeatherService.Infrastructure.DataClients;
 

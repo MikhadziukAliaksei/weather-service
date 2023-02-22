@@ -1,6 +1,6 @@
-﻿using WeatherService.Infrastructure.Options.Interfaces;
+﻿using WeatherService.Domain.Options;
 
-namespace WeatherService.Data.Weather;
+namespace WeatherService.Domain.Weather;
 
 public class WeatherOptions : IHttpDataOptions<WeatherParameter>
 {

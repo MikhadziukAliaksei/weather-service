@@ -3,11 +3,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using WeatherService.Application.Interfaces;
 using WeatherService.ConsoleUI;
-using WeatherService.Data.Weather;
+using WeatherService.Domain.Interfaces;
+using WeatherService.Domain.Weather;
+using WeatherService.Infrastructure.DataProcessors;
 using WeatherService.Infrastructure.DependencyInjection;
 
-var isValid = CommandLineValidator.Validate(args);
-if (!isValid)
+var validationResult = CommandLineValidator.Validate(args);
+if (!validationResult.isValid)
 {
     return;
 }
@@ -23,25 +25,18 @@ Log.Logger = new LoggerConfiguration()
     .Enrich.WithProperty("ApplicationContext", typeof(Program).Assembly.GetName().Name)
     .Enrich.FromLogContext()
     .WriteTo.Console(outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
-    .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Day,
+        outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
     .CreateLogger();
 
 services.AddHttpDataClient<WeatherParameter, Weather, WeatherOptions>(configuration);
-services.AddScoped<IWeatherService, WeatherService.Application.Services.WeatherService>();
+services.AddScoped<IWeatherTracker, WeatherService.Application.Services.WeatherTracker>();
+services.AddScoped<IDataProcessor, DataProcessor>();
+services.AddScoped<IDataViewer, DataViewer>();
 
 var provider = services.BuildServiceProvider();
 
-var weatherService = provider.GetRequiredService<IWeatherService>();
+var weatherService = provider.GetRequiredService<IWeatherTracker>();
 
 
-while (true)
-{
-    var result = weatherService.GetWeatherAsync(new[] {"Vilnius", "Kaunas", "Klaipėda"});
-
-    await foreach (var weather in result)
-    {
-        Console.WriteLine(weather);
-    }
-
-    await Task.Delay(15000);
-}
+await weatherService.StartWeatherTrackingAsync(validationResult.cities);

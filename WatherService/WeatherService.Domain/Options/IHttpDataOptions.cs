@@ -1,6 +1,4 @@
-﻿using WeatherService.Domain.Options;
-
-namespace WeatherService.Infrastructure.Options.Interfaces;
+﻿namespace WeatherService.Domain.Options;
 
 public interface IHttpDataOptions<TIn> : IDataOptions<TIn>
 {

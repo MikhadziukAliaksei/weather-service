@@ -1,4 +1,4 @@
-﻿namespace WeatherService.Data.Weather;
+﻿namespace WeatherService.Domain.Weather;
 
 public class WeatherParameter
 {

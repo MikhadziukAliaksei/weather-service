@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace WeatherService.Data.Weather;
+namespace WeatherService.Domain.Weather;
 
 public class Weather
 {

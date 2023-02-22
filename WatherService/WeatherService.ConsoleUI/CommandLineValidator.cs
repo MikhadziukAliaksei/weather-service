@@ -4,7 +4,7 @@ namespace WeatherService.ConsoleUI;
 
 public static class CommandLineValidator
 {
-    public static bool Validate(string[] args)
+    public static (bool isValid, IEnumerable<string> cities) Validate(string[] args)
     {
         var isValid = true;
         string cities = null;
@@ -38,6 +38,6 @@ public static class CommandLineValidator
             isValid = false;
         }
 
-        return isValid;
+        return ( isValid: isValid, cities: citiesList);
     }
 }

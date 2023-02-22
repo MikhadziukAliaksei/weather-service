@@ -26,7 +26,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\WeatherService.Application\WeatherService.Application.csproj" />
-      <ProjectReference Include="..\WeatherService.Data\WeatherService.Data.csproj" />
       <ProjectReference Include="..\WeatherService.Infrastructure\WeatherService.Infrastructure.csproj" />
     </ItemGroup>
 
