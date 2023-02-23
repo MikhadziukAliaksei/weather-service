@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Polly;
@@ -14,8 +13,8 @@ namespace WeatherService.Infrastructure.DataClients;
 public class HttpDataClient<TIn, TOut, TOptions> : IDataClient<TIn, TOut>
     where TOptions : class, IHttpDataOptions<TIn>
 {
-    private readonly TOptions _options;
     private readonly HttpClient _client;
+    private readonly TOptions _options;
 
     private readonly AsyncPolicy<HttpResponseMessage> _retryPolicy;
 
@@ -27,7 +26,7 @@ public class HttpDataClient<TIn, TOut, TOptions> : IDataClient<TIn, TOut>
         _retryPolicy = HttpPolicyExtensions
             .HandleTransientHttpError()
             .OrResult(msg => msg.StatusCode == HttpStatusCode.Unauthorized)
-            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(1.1, retryAttempt)), onRetryAsync: async (response, _) =>
+            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(1.1, retryAttempt)), async (response, _) =>
             {
                 if (response.Result.StatusCode == HttpStatusCode.Unauthorized)
                 {
@@ -35,7 +34,6 @@ public class HttpDataClient<TIn, TOut, TOptions> : IDataClient<TIn, TOut>
 
                     await AuthenticateAsync();
                 }
-                
             });
     }
 
@@ -59,7 +57,7 @@ public class HttpDataClient<TIn, TOut, TOptions> : IDataClient<TIn, TOut>
         }
     }
 
-    public async Task AuthenticateAsync()
+    private async Task AuthenticateAsync()
     {
         _client.DefaultRequestHeaders.Clear();
         var responseMessage = await _client.PostAsync($"{_options.BaseUrl}/{_options.AuthenticationEndpoint}", new StringContent(JsonConvert.SerializeObject(new

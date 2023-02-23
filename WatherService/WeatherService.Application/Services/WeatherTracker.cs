@@ -8,8 +8,8 @@ namespace WeatherService.Application.Services;
 public class WeatherTracker : IWeatherTracker
 {
     private readonly IDataClient<WeatherParameter, Weather> _dataClient;
-    private readonly IDataViewer _dataViewer;
     private readonly IDataProcessor _dataProcessor;
+    private readonly IDataViewer _dataViewer;
 
     public WeatherTracker(IDataClient<WeatherParameter, Weather> dataClient, IDataViewer dataViewer,
         IDataProcessor dataProcessor)

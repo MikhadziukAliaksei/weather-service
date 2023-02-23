@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using WeatherService.Application.Interfaces;
+using WeatherService.Application.Services;
 using WeatherService.ConsoleUI;
 using WeatherService.Domain.Interfaces;
 using WeatherService.Domain.Weather;
@@ -9,10 +10,7 @@ using WeatherService.Infrastructure.DataProcessors;
 using WeatherService.Infrastructure.DependencyInjection;
 
 var validationResult = CommandLineValidator.Validate(args);
-if (!validationResult.isValid)
-{
-    return;
-}
+if (!validationResult.isValid) return;
 
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", false, true)
@@ -30,7 +28,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 services.AddHttpDataClient<WeatherParameter, Weather, WeatherOptions>(configuration);
-services.AddScoped<IWeatherTracker, WeatherService.Application.Services.WeatherTracker>();
+services.AddScoped<IWeatherTracker, WeatherTracker>();
 services.AddScoped<IDataProcessor, DataProcessor>();
 services.AddScoped<IDataViewer, DataViewer>();
 

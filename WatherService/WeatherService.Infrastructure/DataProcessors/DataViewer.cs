@@ -7,10 +7,7 @@ public class DataViewer : IDataViewer
 {
     public Task DisplayDataAsync(IEnumerable<Weather> weathers)
     {
-        foreach (var weather in weathers)
-        {
-            Console.WriteLine(weather);
-        }
+        foreach (var weather in weathers) Console.WriteLine(weather);
 
         return Task.CompletedTask;
     }

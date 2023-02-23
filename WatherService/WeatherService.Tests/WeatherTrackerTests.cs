@@ -1,18 +1,8 @@
-using Moq;
-using WeatherService.Application.Services;
-using WeatherService.Domain.Interfaces;
-using WeatherService.Domain.Weather;
-
 namespace WeatherService.Tests;
 
 [TestFixture]
 public class WeatherTrackerTests
 {
-    private Mock<IDataClient<WeatherParameter, Weather>> _dataClientMock;
-    private Mock<IDataProcessor> _dataProcessorMock;
-    private Mock<IDataViewer> _dataViewerMock;
-    private CancellationTokenSource _cancellationTokenSource;
-
     [SetUp]
     public void Setup()
     {
@@ -28,27 +18,35 @@ public class WeatherTrackerTests
         _cancellationTokenSource.Dispose();
     }
 
+    private Mock<IDataClient<WeatherParameter, Weather>> _dataClientMock;
+    private Mock<IDataProcessor> _dataProcessorMock;
+    private Mock<IDataViewer> _dataViewerMock;
+    private CancellationTokenSource _cancellationTokenSource;
+
     [Test]
     public async Task StartWeatherTrackingAsync_ShouldFetchWeatherData_WhenGivenListOfCities()
     {
         // Arrange
-        var cities = new List<string> { "Seattle", "Portland" };
+        var cities = new List<string> {"Seattle", "Portland"};
         var cancellationToken = _cancellationTokenSource.Token;
         var weatherTracker =
             new WeatherTracker(_dataClientMock.Object, _dataViewerMock.Object, _dataProcessorMock.Object);
 
         var seattleWeather = new Weather
-            { City = "Seattle", Temperature = 60, Precipitation = -1, Summary = "hot", WindSpeed = 6 };
+            {City = "Seattle", Temperature = 60, Precipitation = -1, Summary = "hot", WindSpeed = 6};
         var portlandWeather = new Weather
-            { City = "Portland", Temperature = 55, Precipitation = -1, Summary = "hot", WindSpeed = 6 };
+            {City = "Portland", Temperature = 55, Precipitation = -1, Summary = "hot", WindSpeed = 6};
 
         _dataClientMock
             .Setup(x => x.GetDataAsync(It.IsAny<WeatherParameter>(), cancellationToken))
-            .ReturnsAsync((WeatherParameter parameter, CancellationToken token) =>
+            .ReturnsAsync((WeatherParameter parameter, CancellationToken _) =>
             {
-                if (parameter.CityName == "Seattle") return seattleWeather;
-                if (parameter.CityName == "Portland") return portlandWeather;
-                throw new ArgumentException($"Unexpected city name: {parameter.CityName}");
+                return parameter.CityName switch
+                {
+                    "Seattle" => seattleWeather,
+                    "Portland" => portlandWeather,
+                    _ => throw new ArgumentException($"Unexpected city name: {parameter.CityName}")
+                };
             });
         _cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(20));
 
@@ -61,7 +59,7 @@ public class WeatherTrackerTests
         {
             // Do nothing
         }
-        
+
         // Assert
         _dataClientMock.Verify(x => x.GetDataAsync(It.IsAny<WeatherParameter>(), cancellationToken), Times.AtLeastOnce);
         _dataProcessorMock.Verify(x => x.StoreDataAsync(It.IsAny<IEnumerable<Weather>>()), Times.AtLeastOnce);
@@ -69,26 +67,29 @@ public class WeatherTrackerTests
     }
 
     [Test]
-    public async Task StartWeatherTrackingAsync_ShouldStopFetchingWeatherData_WhenCancellationRequested()
+    public void StartWeatherTrackingAsync_ShouldStopFetchingWeatherData_WhenCancellationRequested()
     {
         // Arrange
-        var cities = new List<string> { "Seattle", "Portland" };
+        var cities = new List<string> {"Seattle", "Portland"};
         var cancellationToken = _cancellationTokenSource.Token;
         var weatherTracker =
             new WeatherTracker(_dataClientMock.Object, _dataViewerMock.Object, _dataProcessorMock.Object);
 
         var seattleWeather = new Weather
-            { City = "Seattle", Temperature = 60, Precipitation = -1, Summary = "hot", WindSpeed = 6 };
+            {City = "Seattle", Temperature = 60, Precipitation = -1, Summary = "hot", WindSpeed = 6};
         var portlandWeather = new Weather
-            { City = "Portland", Temperature = 55, Precipitation = -1, Summary = "hot", WindSpeed = 6 };
+            {City = "Portland", Temperature = 55, Precipitation = -1, Summary = "hot", WindSpeed = 6};
 
         _dataClientMock
             .Setup(x => x.GetDataAsync(It.IsAny<WeatherParameter>(), cancellationToken))
-            .ReturnsAsync((WeatherParameter parameter, CancellationToken token) =>
+            .ReturnsAsync((WeatherParameter parameter, CancellationToken _) =>
             {
-                if (parameter.CityName == "Seattle") return seattleWeather;
-                if (parameter.CityName == "Portland") return portlandWeather;
-                throw new ArgumentException($"Unexpected city name: {parameter.CityName}");
+                return parameter.CityName switch
+                {
+                    "Seattle" => seattleWeather,
+                    "Portland" => portlandWeather,
+                    _ => throw new ArgumentException($"Unexpected city name: {parameter.CityName}")
+                };
             });
 
         // Act
@@ -103,7 +104,7 @@ public class WeatherTrackerTests
         _dataProcessorMock.Verify(x => x.StoreDataAsync(It.IsAny<IEnumerable<Weather>>()), Times.AtLeastOnce);
         _dataViewerMock.Verify(x => x.DisplayDataAsync(It.IsAny<IEnumerable<Weather>>()), Times.AtLeastOnce);
     }
-    
+
     [Test]
     public async Task StartWeatherTrackingAsync_ShouldNotFetchWeatherData_WhenCancellationRequestedImmediately()
     {
@@ -122,7 +123,7 @@ public class WeatherTrackerTests
         {
             //Do nothing
         }
-        
+
 
         // Assert
         _dataClientMock.Verify(x => x.GetDataAsync(It.IsAny<WeatherParameter>(), It.IsAny<CancellationToken>()),

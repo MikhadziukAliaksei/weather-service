@@ -31,13 +31,13 @@ public static class CommandLineValidator
         }
 
         var citiesList = cities?.Split(',');
-        
+
         if (citiesList?.Length == 0)
         {
             Console.Error.WriteLine("WeatherService.ConsoleUI.exe: --cities option must contain at least one city");
             isValid = false;
         }
 
-        return ( isValid: isValid, cities: citiesList);
+        return (isValid, cities: citiesList);
     }
 }
