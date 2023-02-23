@@ -44,7 +44,7 @@ public class HttpDataClient<TIn, TOut, TOptions> : IDataClient<TIn, TOut>
             var response = await _retryPolicy.ExecuteAsync(async () =>
                 await _client.GetAsync(_options.BuildUrl(@in), cancellationToken));
 
-            response.EnsureSuccessStatusCode();
+            if (response.StatusCode == HttpStatusCode.NotFound) Log.Warning("No data found for {@In}", @in);
 
             var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
 
