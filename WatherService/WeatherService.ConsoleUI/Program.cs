@@ -10,7 +10,11 @@ using WeatherService.Infrastructure.DataProcessors;
 using WeatherService.Infrastructure.DependencyInjection;
 
 var validationResult = CommandLineValidator.Validate(args);
-if (!validationResult.isValid) return;
+if (!validationResult.isValid)
+{
+    Console.ReadKey();
+    return;
+}
 
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", false, true)
