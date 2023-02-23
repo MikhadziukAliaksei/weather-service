@@ -23,7 +23,11 @@ public static class CommandLineValidator
                     isValid = true;
                 }
             })
-            .WithNotParsed(_ => { Console.WriteLine("Invalid arguments."); });
+            .WithNotParsed(_ =>
+            {
+                Console.WriteLine("Invalid arguments.");
+                isValid = false;
+            });
 
 
         return (isValid, cities);
